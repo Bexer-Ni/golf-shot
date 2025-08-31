@@ -3,533 +3,500 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shot Decision Assistant (กอล์ฟ)</title>
+<title>Shot Decision Assistant (กอล์ฟ) — Pro MVP</title>
 <style>
   :root { --bg:#0f172a; --card:#111827; --muted:#94a3b8; --text:#e5e7eb; --accent:#38bdf8; --good:#34d399; --bad:#f87171; }
-  * { box-sizing: border-box; }
-  body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "TH Sarabun New", "Noto Sans Thai", sans-serif; background: linear-gradient(180deg, #0b1220, #0f172a 60%); color: var(--text); }
-  header { padding: 20px 16px 8px; position: sticky; top:0; background: rgba(15,23,42,0.85); backdrop-filter: blur(6px); border-bottom: 1px solid #1f2937; z-index: 10; }
-  header h1 { margin:0; font-size: 20px; letter-spacing: 0.3px; }
-  header p { margin:6px 0 0; color: var(--muted); font-size: 13px; }
-  main { padding: 16px; max-width: 1080px; margin: 0 auto; }
-  .grid { display:grid; grid-template-columns: repeat(12, 1fr); gap: 12px; }
-  .card { background: linear-gradient(180deg, #0b1020, #0d1323); border: 1px solid #1f2937; border-radius: 12px; padding: 14px; box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
-  .card h2 { font-size: 16px; margin:0 0 8px; letter-spacing: 0.3px; }
-  .card p { margin: 6px 0; color: var(--muted); font-size: 13px; }
-  label { display:block; font-size: 13px; color: #cbd5e1; margin: 8px 0 4px; }
-  select, input[type="number"], input[type="range"] { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid #334155; background:#0b1220; color: var(--text); }
-  .row { display:flex; gap:10px; }
-  .row > * { flex:1; }
-  button { cursor:pointer; border:1px solid #334155; background:#0b1220; color:var(--text); padding:10px 12px; border-radius:10px; font-weight:600; }
-  button.primary { background: linear-gradient(180deg, #0891b2, #0284c7); border: none; }
-  button.good { background: linear-gradient(180deg, #10b981, #059669); border: none; }
-  button.bad { background: linear-gradient(180deg, #ef4444, #dc2626); border: none; }
-  .pill { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; font-size:12px; border:1px solid #334155; color:#cbd5e1; }
-  .output { font-size: 14px; line-height: 1.55; }
-  ul { margin: 8px 0 0 18px; }
-  .tag { font-size: 11px; color: var(--muted); display:inline-block; padding:2px 8px; border:1px solid #334155; border-radius:999px; margin-right:6px; }
-  .footer { margin-top: 10px; font-size: 12px; color: var(--muted); }
-  .small { font-size: 12px; color:#cbd5e1; }
-  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
-  details { border:1px solid #334155; border-radius:10px; padding:10px 12px; background: #0b1220; }
-  summary { cursor:pointer; font-weight:700; }
-  .divider { height:1px; background:#1f2937; margin: 10px 0; }
-  .badge { background:#0b1220; border:1px solid #334155; font-size:11px; padding:4px 8px; border-radius:999px; display:inline-block; margin-right:6px; color:#cbd5e1; }
-  .right { text-align:right; }
-  .muted { color: var(--muted); }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans Thai", sans-serif; background: linear-gradient(180deg,#0b1220,#0f172a 60%); color:var(--text); }
+  header { padding: 20px 16px 8px; position: sticky; top:0; background: rgba(15,23,42,0.85); backdrop-filter: blur(6px); border-bottom:1px solid #1f2937; z-index:10; }
+  header h1{ margin:0; font-size:20px; }
+  header p{ margin:6px 0 0; color:var(--muted); font-size:13px; }
+  main{ padding:16px; max-width:980px; margin:0 auto; }
+  .card{ background: linear-gradient(180deg,#0b1020,#0d1323); border:1px solid #1f2937; border-radius:12px; padding:14px; box-shadow:0 8px 20px rgba(0,0,0,.25); margin-bottom:12px; }
+  .card h2{ font-size:16px; margin:0 0 8px; }
+  label{ display:block; font-size:13px; color:#cbd5e1; margin:8px 0 4px; }
+  select,input[type="number"],input[type="text"]{ width:100%; padding:8px 10px; border-radius:8px; border:1px solid #334155; background:#0b1220; color:var(--text); }
+  .row{ display:flex; gap:10px; }
+  .row > *{ flex:1; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .grid3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+  @media (max-width:820px){ .grid3{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:620px){ .grid2,.grid3{ grid-template-columns:1fr; } }
+  button{ cursor:pointer; border:1px solid #334155; background:#0b1220; color:var(--text); padding:10px 12px; border-radius:10px; font-weight:600; }
+  button.primary{ background: linear-gradient(180deg,#0891b2,#0284c7); border:none; }
+  button.good{ background: linear-gradient(180deg,#10b981,#059669); border:none; }
+  button.bad{ background: linear-gradient(180deg,#ef4444,#dc2626); border:none; }
+  .divider{ height:1px; background:#1f2937; margin:10px 0; }
+  .small{ font-size:12px; color:#cbd5e1; }
+  .output{ font-size:14px; line-height:1.55; }
+  ul{ margin:8px 0 0 18px; }
+  .tag{ font-size:11px; color:var(--muted); display:inline-block; padding:2px 8px; border:1px solid #334155; border-radius:999px; margin-right:6px; }
+  .right{ text-align:right; }
+  .muted{ color:var(--muted); }
+  details{ border:1px solid #334155; border-radius:10px; padding:10px 12px; background:#0b1220; }
+  summary{ cursor:pointer; font-weight:700; }
+  .badge{ background:#0b1220; border:1px solid #334155; font-size:11px; padding:4px 8px; border-radius:999px; display:inline-block; margin-right:6px; color:#cbd5e1; }
+  .subtle{ opacity:.9 }
 </style>
 </head>
 <body>
 <header>
-  <h1>Shot Decision Assistant • เวอร์ชัน MVP</h1>
-  <p>เลือกสภาพช็อต ➝ กด “แนะนำวิธีตี” ➝ ตีเสร็จรีวิวผล เพื่อให้แอพปรับตัวเข้าหาคุณ</p>
+  <h1>Shot Decision Assistant • Pro MVP (แนวตั้ง)</h1>
+  <p>อินพุตมากขึ้น → คำแนะนำครบกว่า • เรียนรู้จาก Feedback ของคุณ</p>
 </header>
 
 <main>
-  <div class="grid">
-    <div class="card" style="grid-column: span 5;">
-      <h2>1) เลือกสภาพช็อต (Conditions)</h2>
-      <div class="row">
-        <div>
-          <label>Lie</label>
-          <select id="lie">
-            <option>แฟร์เวย์</option>
-            <option>รัฟท์ (บาง)</option>
-            <option>รัฟท์ (หนา)</option>
-            <option>บังเกอร์ข้างกรีน</option>
-            <option>บังเกอร์แฟร์เวย์</option>
-            <option>ฟรินจ์/เอพพโรช</option>
-            <option>ทีออฟ</option>
-          </select>
-        </div>
-        <div>
-          <label>ระยะถึงเป้า (เมตร)</label>
-          <input id="dist" type="number" min="5" max="250" step="1" value="120">
-        </div>
+  <!-- Inputs TOP -->
+  <div class="card">
+    <h2>1) เลือกสภาพช็อต (Conditions)</h2>
+    <div class="grid3">
+      <div>
+        <label>ประเภทช็อต</label>
+        <select id="shotType">
+          <option value="approach">Approach</option>
+          <option value="layup">Layup</option>
+          <option value="recovery">Recovery / Punch</option>
+          <option value="tee">Tee Shot</option>
+          <option value="short">Short Game</option>
+        </select>
       </div>
-
-      <div class="row">
-        <div>
-          <label>ความชัน ขึ้น/ลงเนิน</label>
-          <select id="slopeY">
-            <option value="flat">พื้นราบ</option>
-            <option value="up_lite">ขึ้นเนินเล็กน้อย</option>
-            <option value="up_big">ขึ้นเนินมาก</option>
-            <option value="down_lite">ลงเนินเล็กน้อย</option>
-            <option value="down_big">ลงเนินมาก</option>
-          </select>
-        </div>
-        <div>
-          <label>ลูกสูง/ต่ำกว่าเท้า</label>
-          <select id="slopeX">
-            <option value="level">ระดับเดียวกับเท้า</option>
-            <option value="above_lite">ลูกสูงกว่าเท้าเล็กน้อย</option>
-            <option value="above_big">ลูกสูงกว่าเท้ามาก</option>
-            <option value="below_lite">ลูกต่ำกว่าเท้าเล็กน้อย</option>
-            <option value="below_big">ลูกต่ำกว่าเท้ามาก</option>
-          </select>
-        </div>
+      <div>
+        <label>Lie</label>
+        <select id="lie">
+          <option>แฟร์เวย์</option>
+          <option>รัฟท์ (บาง)</option>
+          <option>รัฟท์ (หนา)</option>
+          <option>บังเกอร์ข้างกรีน</option>
+          <option>บังเกอร์แฟร์เวย์</option>
+          <option>ฟรินจ์/เอพพโรช</option>
+          <option>ทีออฟ</option>
+        </select>
       </div>
-
-      <div class="row">
-        <div>
-          <label>ลม</label>
-          <select id="wind">
-            <option value="calm">ลมสงบ</option>
-            <option value="head_lite">ลมต้านเล็กน้อย</option>
-            <option value="head_big">ลมต้านแรง</option>
-            <option value="tail_lite">ลมตามเล็กน้อย</option>
-            <option value="tail_big">ลมตามแรง</option>
-            <option value="cross">ลมขวาง</option>
-          </select>
-        </div>
-        <div>
-          <label>สภาพลูก</label>
-          <select id="ball">
-            <option value="normal">ปกติ</option>
-            <option value="sitting">ลอยบนหญ้า</option>
-            <option value="down">จม/ฝัง</option>
-          </select>
-        </div>
+      <div>
+        <label>ระยะถึงเป้า (เมตร)</label>
+        <input id="dist" type="number" min="5" max="260" step="1" value="120">
       </div>
-
-      <div class="row">
-        <div>
-          <label>พื้นดิน</label>
-          <select id="turf">
-            <option value="normal">ปกติ</option>
-            <option value="firm">แข็ง</option>
-            <option value="soft">นุ่ม/ชื้น</option>
-          </select>
-        </div>
-        <div>
-          <label>สิ่งกีดขวาง</label>
-          <select id="obs">
-            <option value="none">ไม่มี</option>
-            <option value="carry">ต้องข้ามสิ่งกีดขวาง</option>
-            <option value="low">ต้องคุมให้ลูกพุ่งต่ำ</option>
-            <option value="high">ต้องชิพ/ยกสูง</option>
-          </select>
-        </div>
+      <div>
+        <label>ความชัน ขึ้น/ลงเนิน</label>
+        <select id="slopeY">
+          <option value="flat">พื้นราบ</option>
+          <option value="up_lite">ขึ้นเนินเล็กน้อย</option>
+          <option value="up_big">ขึ้นเนินมาก</option>
+          <option value="down_lite">ลงเนินเล็กน้อย</option>
+          <option value="down_big">ลงเนินมาก</option>
+        </select>
       </div>
-
-      <div class="row">
-        <div>
-          <label>ความมั่นคงการยืน</label>
-          <select id="stance">
-            <option value="stable">มั่นคง</option>
-            <option value="unstable">ไม่ค่อยมั่นคง</option>
-          </select>
-        </div>
-        <div>
-          <label>ระดับธง</label>
-          <select id="pin">
-            <option value="center">กลางกรีน</option>
-            <option value="front">หน้ากรีน</option>
-            <option value="back">หลังกรีน</option>
-            <option value="left">ซ้าย</option>
-            <option value="right">ขวา</option>
-          </select>
-        </div>
+      <div>
+        <label>ลูกสูง/ต่ำกว่าเท้า</label>
+        <select id="slopeX">
+          <option value="level">ระดับเดียวกับเท้า</option>
+          <option value="above_lite">ลูกสูงกว่าเท้าเล็กน้อย</option>
+          <option value="above_big">ลูกสูงกว่าเท้ามาก</option>
+          <option value="below_lite">ลูกต่ำกว่าเท้าเล็กน้อย</option>
+          <option value="below_big">ลูกต่ำกว่าเท้ามาก</option>
+        </select>
       </div>
-
-      <div class="divider"></div>
-      <div class="row">
-        <button class="primary" onclick="recommend()">แนะนำวิธีตี</button>
-        <button onclick="resetForm()">ล้างค่า</button>
+      <div>
+        <label>ลม</label>
+        <select id="wind">
+          <option value="calm">ลมสงบ</option>
+          <option value="head_lite">ลมต้านเล็กน้อย</option>
+          <option value="head_big">ลมต้านแรง</option>
+          <option value="tail_lite">ลมตามเล็กน้อย</option>
+          <option value="tail_big">ลมตามแรง</option>
+          <option value="cross_l2r">ลมขวาง ซ้าย→ขวา</option>
+          <option value="cross_r2l">ลมขวาง ขวา→ซ้าย</option>
+        </select>
       </div>
-      <p class="footer">เคล็ดลับ: ปรับระยะด้วยสไลเดอร์ลม/ความชันอัตโนมัติในข้อเสนอ</p>
+      <div>
+        <label>สภาพลูก</label>
+        <select id="ball">
+          <option value="normal">ปกติ</option>
+          <option value="sitting">ลอยบนหญ้า</option>
+          <option value="down">จม/ฝัง</option>
+        </select>
+      </div>
+      <div>
+        <label>พื้นดิน</label>
+        <select id="turf">
+          <option value="normal">ปกติ</option>
+          <option value="firm">แข็ง</option>
+          <option value="soft">นุ่ม/ชื้น</option>
+        </select>
+      </div>
+      <div>
+        <label>สิ่งกีดขวาง</label>
+        <select id="obs">
+          <option value="none">ไม่มี</option>
+          <option value="carry">ต้องข้ามสิ่งกีดขวาง</option>
+          <option value="low">ต้องคุมวิถีต่ำ</option>
+          <option value="high">ต้องชิพ/ยกสูง</option>
+        </select>
+      </div>
+      <div>
+        <label>ความมั่นคงการยืน</label>
+        <select id="stance">
+          <option value="stable">มั่นคง</option>
+          <option value="unstable">ไม่ค่อยมั่นคง</option>
+        </select>
+      </div>
+      <div>
+        <label>ตำแหน่งธง</label>
+        <select id="pin">
+          <option value="center">กลางกรีน</option>
+          <option value="front">หน้ากรีน</option>
+          <option value="back">หลังกรีน</option>
+          <option value="left">ซ้าย</option>
+          <option value="right">ขวา</option>
+        </select>
+      </div>
+      <div>
+        <label>ความเร็วกรีน</label>
+        <select id="green">
+          <option value="normal">ปกติ</option>
+          <option value="slow">ช้า/นุ่ม</option>
+          <option value="fast">ไว/แข็ง</option>
+        </select>
+      </div>
+      <div>
+        <label>หมายเหตุ (เช่น เป้าเลี่ยงซ้าย, หลีกบังเกอร์)</label>
+        <input id="notes" type="text" placeholder="ใส่โจทย์เฉพาะหลุม/สิ่งที่อยากเลี่ยง">
+      </div>
     </div>
-
-    <div class="card" style="grid-column: span 7;">
-      <h2>2) คำแนะนำการตี (Summary)</h2>
-      <div id="output" class="output">เลือกสภาพด้านซ้าย แล้วกด “แนะนำวิธีตี”</div>
-      <div id="tags" style="margin-top:10px;"></div>
-      <div class="divider"></div>
-      <div class="row">
-        <button class="good" onclick="sendFeedback(true)">ผลลัพธ์: ดีขึ้น 👍</button>
-        <button class="bad" onclick="sendFeedback(false)">ผลลัพธ์: ไม่ดี 👎</button>
-        <div class="right" style="flex:1; align-self:center;"><span class="badge" id="profileScore">โปรไฟล์เรียนรู้: 0</span></div>
-      </div>
-      <p class="footer small">ระบบจะเรียนรู้จากปุ่มผลลัพธ์เพื่อปรับน้ำหนักคำแนะนำให้เข้ากับสไตล์ของคุณ (เก็บไว้ในเครื่อง)</p>
+    <div class="divider"></div>
+    <div class="row">
+      <button class="primary" onclick="recommend()">แนะนำวิธีตี</button>
+      <button onclick="resetForm()">ล้างค่า</button>
     </div>
+    <p class="small muted">MVP: rule-based + แก้ความขัดแย้ง (ไม้/ตำแหน่งลูก/วิถี) + ตัวเลือกอินพุตเพิ่ม</p>
+  </div>
 
-    <div class="card" style="grid-column: span 12;">
-      <h2>3) บันทึกและตั้งค่า</h2>
-      <div class="row">
-        <div>
-          <button onclick="exportData()">Export โปรไฟล์ (JSON)</button>
-          <button onclick="importData()">Import โปรไฟล์</button>
-          <button onclick="clearData()">ล้างการเรียนรู้</button>
-        </div>
-        <div class="right" style="flex:1">
-          <span class="muted small">MVP: rule-based + เรียนรู้โดยถ่วงน้ำหนักคำแนะนำ</span>
-        </div>
-      </div>
-      <details style="margin-top:10px;">
-        <summary>ดูหลักการ/เหตุผลที่ระบบใช้ (Explainability)</summary>
-        <div id="why" class="small mono" style="white-space:pre-wrap; margin-top:10px;"></div>
-      </details>
+  <!-- Advice UNDER -->
+  <div class="card">
+    <h2>2) คำแนะนำการตี (Summary)</h2>
+    <div id="output" class="output">เลือกสภาพด้านบน แล้วกด “แนะนำวิธีตี”</div>
+    <div id="tags" style="margin-top:10px;"></div>
+    <div class="divider"></div>
+    <div class="row">
+      <button class="good" onclick="sendFeedback(true)">ผลลัพธ์: ดีขึ้น 👍</button>
+      <button class="bad" onclick="sendFeedback(false)">ผลลัพธ์: ไม่ดี 👎</button>
+      <div class="right" style="flex:1; align-self:center;"><span class="badge" id="profileScore">โปรไฟล์เรียนรู้: 0</span></div>
     </div>
+    <p class="small muted">ระบบจะเรียนรู้จากการกดผลลัพธ์ เพื่อจัดลำดับคำแนะนำให้เข้ากับคุณ</p>
+  </div>
+
+  <div class="card">
+    <h2>3) บันทึกผลลัพธ์หลังตี (เสริมการเรียนรู้)</h2>
+    <div class="grid3">
+      <div>
+        <label>ผลลัพธ์หลัก</label>
+        <select id="res_main">
+          <option value="hit">โดนตามแผน</option>
+          <option value="short">สั้น</option>
+          <option value="long">ยาว</option>
+          <option value="left">หลุดซ้าย</option>
+          <option value="right">หลุดขวา</option>
+          <option value="fat">Fat</option>
+          <option value="thin">Thin</option>
+          <option value="bunker">ลงบังเกอร์</option>
+        </select>
+      </div>
+      <div>
+        <label>รูปทรงบอล</label>
+        <select id="ball_shape">
+          <option value="straight">ตรง</option>
+          <option value="draw">Draw</option>
+          <option value="fade">Fade</option>
+          <option value="hook">Hook</option>
+          <option value="slice">Slice</option>
+        </select>
+      </div>
+      <div>
+        <label>พลาดระยะ (เมตร)</label>
+        <input id="miss_m" type="number" step="1" value="0">
+      </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button onclick="saveResult()">บันทึกผลลัพธ์</button>
+      <div class="right" style="flex:1"><span class="small subtle" id="logCount">logs: 0</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>4) บันทึก/ตั้งค่า & เหตุผล</h2>
+    <div class="row">
+      <div>
+        <button onclick="exportData()">Export โปรไฟล์ (JSON)</button>
+        <button onclick="importData()">Import โปรไฟล์</button>
+        <button onclick="clearData()">ล้างการเรียนรู้</button>
+      </div>
+      <div class="right" style="flex:1">
+        <span class="muted small">Explainability</span>
+      </div>
+    </div>
+    <details style="margin-top:10px;">
+      <summary>ดูเหตุผล/กฎที่ระบบใช้</summary>
+      <div id="why" class="small" style="white-space:pre-wrap; margin-top:10px;"></div>
+    </details>
   </div>
 </main>
 
 <script>
-// --- Utilities & Storage ---
-const KEY = "golf_shot_weights_v1";
-const LOGKEY = "golf_shot_logs_v1";
-
-function loadWeights(){
-  try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; }
-}
+// --- Storage ---
+const KEY="golf_shot_weights_v2";
+const LOGKEY="golf_shot_logs_v2";
+function loadWeights(){ try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}} }
 function saveWeights(w){ localStorage.setItem(KEY, JSON.stringify(w)); }
-function loadLogs(){
-  try { return JSON.parse(localStorage.getItem(LOGKEY)) || []; } catch(e){ return []; }
-}
+function loadLogs(){ try{return JSON.parse(localStorage.getItem(LOGKEY))||[]}catch(e){return[]} }
 function saveLogs(L){ localStorage.setItem(LOGKEY, JSON.stringify(L)); }
-function profileScore(){
-  const w = loadWeights();
-  let s = 0; Object.values(w).forEach(v=> s += v);
-  return s;
-}
-function tagify(text){ return `<span class="tag">${text}</span>`; }
+function profileScore(){ const w=loadWeights(); return Object.values(w).reduce((a,b)=>a+b,0); }
+const tag = t=> `<span class="tag">${t}</span>`;
 
-// --- Core Recommendation Engine ---
-// Lightweight rule base. Each rule yields one or more "advice tokens".
-// Tokens carry weights influenced by feedback.
-const baseRules = [
-  // Lie-based
-  { when: s=> s.lie==="แฟร์เวย์", add:["club_standard","contact_ball_then_turf","normal_trajectory"] },
-  { when: s=> s.lie==="รัฟท์ (บาง)", add:["take_more_club_small","steepen_slight","firm_grip_lite"] },
-  { when: s=> s.lie==="รัฟท์ (หนา)", add:["take_more_club","steepen","ball_center_back","reduce_loft","firm_grip","commit_speed"] },
-  { when: s=> s.lie==="ฟรินจ์/เอพพโรช", add:["putt_or_chip_low","weight_forward","hands_forward","short_back_long_through"] },
-  { when: s=> s.lie==="บังเกอร์ข้างกรีน", add:["open_face","ball_forward","weight_left","splash_sand","accelerate"] },
-  { when: s=> s.lie==="บังเกอร์แฟร์เวย์", add:["ball_center","pick_ball","less_sand","take_more_club","swing_smooth"] },
-  { when: s=> s.lie==="ทีออฟ", add:["tee_height_half","launch_high","widen_stance"] },
+// --- Rule base (ขยาย) ---
+const baseRules=[
+  // Lie
+  {when:s=>s.lie==="แฟร์เวย์", add:["club_standard","contact_ball_then_turf","normal_trajectory"]},
+  {when:s=>s.lie==="รัฟท์ (บาง)", add:["club_up_0_5","steepen_slight","firm_grip_lite"]},
+  {when:s=>s.lie==="รัฟท์ (หนา)", add:["club_up_1","steepen","ball_center_back","reduce_loft_hint","firm_grip","commit_speed"]},
+  {when:s=>s.lie==="ฟรินจ์/เอพพโรช", add:["consider_putt_or_low_chip","weight_forward","hands_forward","short_back_long_through"]},
+  {when:s=>s.lie==="บังเกอร์ข้างกรีน", add:["open_face","ball_forward","weight_left","splash_sand","accelerate","traj_high_1"]},
+  {when:s=>s.lie==="บังเกอร์แฟร์เวย์", add:["ball_center","pick_ball","less_sand","club_up_1","swing_smooth"]},
+  {when:s=>s.lie==="ทีออฟ", add:["tee_height_half","launch_high","widen_stance","traj_high_1"]},
 
-  // Slope Y (up/downhill)
-  { when: s=> s.slopeY==="up_lite", add:["add_club_05","aim_left_right_stable","weight_uphill_foot"] },
-  { when: s=> s.slopeY==="up_big", add:["add_club_1","shorter_back","weight_uphill_foot"] },
-  { when: s=> s.slopeY==="down_lite", add:["minus_club_05","ball_forward","swing_smooth"] },
-  { when: s=> s.slopeY==="down_big", add:["minus_club_1","ball_forward","hold_loft"] },
+  // Shot type tweaks
+  {when:s=>s.shotType==="recovery", add:["traj_low_2","ball_back","knockdown","start_against_wind"]},
+  {when:s=>s.shotType==="short", add:["weight_forward","hands_forward","short_back_long_through"]},
 
-  // Sidehill X (above/below feet)
-  { when: s=> s.slopeX==="above_lite", add:["aim_right","grip_down_05","flatter_plane"] },
-  { when: s=> s.slopeX==="above_big", add:["aim_right_more","grip_down_1","flatter_plane"] },
-  { when: s=> s.slopeX==="below_lite", add:["aim_left","bend_knees","steeper_plane"] },
-  { when: s=> s.slopeX==="below_big", add:["aim_left_more","bend_knees_more","steeper_plane"] },
+  // Slope Y
+  {when:s=>s.slopeY==="up_lite", add:["club_up_0_5","aim_balance","weight_uphill_foot"]},
+  {when:s=>s.slopeY==="up_big", add:["club_up_1","shorter_back","weight_uphill_foot"]},
+  {when:s=>s.slopeY==="down_lite", add:["club_down_0_5","ball_forward","swing_smooth","traj_high_1"]},
+  {when:s=>s.slopeY==="down_big", add:["club_down_1","ball_forward","hold_loft","traj_high_1"]},
+
+  // Sidehill
+  {when:s=>s.slopeX==="above_lite", add:["aim_right","grip_down_0_5","flatter_plane"]},
+  {when:s=>s.slopeX==="above_big", add:["aim_right_more","grip_down_1","flatter_plane"]},
+  {when:s=>s.slopeX==="below_lite", add:["aim_left","bend_knees","steeper_plane"]},
+  {when:s=>s.slopeX==="below_big", add:["aim_left_more","bend_knees_more","steeper_plane"]},
 
   // Wind
-  { when: s=> s.wind==="head_lite", add:["add_club_05","lower_flight_option","swing_smooth"] },
-  { when: s=> s.wind==="head_big", add:["add_club_1","keep_spin_down","ball_back"] },
-  { when: s=> s.wind==="tail_lite", add:["minus_club_05","higher_land_soft"] },
-  { when: s=> s.wind==="tail_big", add:["minus_club_1","control_spin","land_before_flag"] },
-  { when: s=> s.wind==="cross", add:["start_against_wind","allow_drift"] },
+  {when:s=>s.wind==="head_lite", add:["club_up_0_5","traj_low_1","swing_smooth"]},
+  {when:s=>s.wind==="head_big", add:["club_up_1","keep_spin_down","ball_back","traj_low_2"]},
+  {when:s=>s.wind==="tail_lite", add:["club_down_0_5","traj_high_1"]},
+  {when:s=>s.wind==="tail_big", add:["club_down_1","control_spin","land_before_flag","traj_high_2"]},
+  {when:s=>s.wind==="cross_l2r", add:["start_against_wind_l2r","allow_drift"]},
+  {when:s=>s.wind==="cross_r2l", add:["start_against_wind_r2l","allow_drift"]},
 
   // Ball state
-  { when: s=> s.ball==="sitting", add:["ball_forward","shallow_angle","sweep_feel"] },
-  { when: s=> s.ball==="down", add:["steepen","hands_forward","commit_speed"] },
+  {when:s=>s.ball==="sitting", add:["ball_forward","shallow_angle","sweep_feel","traj_high_1"]},
+  {when:s=>s.ball==="down", add:["steepen","hands_forward","commit_speed","ball_back","traj_low_1"]},
 
   // Turf
-  { when: s=> s.turf==="firm", add:["ball_center","shallow_angle","clip_ball"] },
-  { when: s=> s.turf==="soft", add:["ball_back","more_steep","make_divot"] },
+  {when:s=>s.turf==="firm", add:["ball_center","shallow_angle","clip_ball"]},
+  {when:s=>s.turf==="soft", add:["ball_back","more_steep","make_divot_en"]},
 
   // Obstacle
-  { when: s=> s.obs==="carry", add:["take_enough_carry","full_commit"] },
-  { when: s=> s.obs==="low", add:["knockdown","ball_back","hold_loft"] },
-  { when: s=> s.obs==="high", add:["open_face","speed_pop","land_soft"] },
+  {when:s=>s.obs==="carry", add:["take_enough_carry","full_commit"]},
+  {when:s=>s.obs==="low", add:["knockdown","ball_back","hold_loft","traj_low_2"]},
+  {when:s=>s.obs==="high", add:["open_face","speed_pop","land_soft","traj_high_2"]},
 
   // Stance
-  { when: s=> s.stance==="unstable", add:["shorter_back","more_balance","club_up_if_needed"] },
+  {when:s=>s.stance==="unstable", add:["shorter_back","more_balance","club_up_0_5"]},
+
+  // Green speed
+  {when:s=>s.green==="fast", add:["land_before_flag","traj_high_1"]},
+  {when:s=>s.green==="slow", add:["aim_center_bias","traj_low_1"]},
 ];
 
-// Token-to-text mapping + default weights for personalization
-const tokenMap = {
-  // Clubs & distance management
-  "club_standard": "เลือกไม้ตามระยะปกติของคุณ",
-  "take_more_club_small": "เลือกไม้ยาวขึ้นครึ่งเบอร์ (เช่น 8 → 7)",
-  "take_more_club": "เลือกไม้ยาวขึ้น 1 เบอร์ขึ้นไป",
-  "add_club_05": "เผื่อระยะ +ครึ่งเบอร์ จากสภาพ",
-  "add_club_1": "เผื่อระยะ +1 เบอร์ จากสภาพ",
-  "minus_club_05": "ลดระยะ -ครึ่งเบอร์ เนื่องจากสภาพ",
-  "minus_club_1": "ลดระยะ -1 เบอร์ เนื่องจากสภาพ",
-  "club_up_if_needed": "หากกลัวพลังตก ให้เพิ่มเบอร์ไม้",
-  "take_enough_carry": "คำนวณระยะข้ามสิ่งกีดขวาง + เผื่อ 10%",
-  // Ball position / setup
-  "ball_center": "ตำแหน่งลูกกลางเท้า",
-  "ball_center_back": "ลูกค่อนไปหลังเล็กน้อย (ช่วยให้เข้าลูกชันขึ้น)",
-  "ball_forward": "ลูกค่อนไปหน้าเล็กน้อย",
-  "ball_back": "ลูกไปด้านหลังเพื่อคุมวิถีต่ำ",
-  "widen_stance": "กางเท้าให้กว้างขึ้นเพื่อเสถียรภาพ",
-  "weight_left": "น้ำหนัก 60–70% ไปเท้าซ้าย (บังเกอร์ข้างกรีน)",
-  "weight_uphill_foot": "ถ่ายน้ำหนักไปทางเท้าที่สูงกว่า (รักษาแนวสวิง)",
-  "weight_forward": "น้ำหนักอยู่หน้า 60% เพื่อคุมลอฟท์ตอนชิพ",
-  "hands_forward": "มืออยู่หน้าเล็กน้อยเพื่อคุมใบไม้",
-  // Swing keys
-  "contact_ball_then_turf": "เข้าลูกก่อนแล้วค่อยโดนหญ้า (เหล็ก)",
-  "normal_trajectory": "สวิงปกติ เน้นจังหวะสม่ำเสมอ",
-  "steepen_slight": "ตั้งใจลงไม้ชันขึ้นเล็กน้อย",
-  "steepen": "ลงไม้ชันเพื่อทะลุหญ้ารัฟท์",
-  "more_steep": "เพิ่มมุมชันเพื่อป้องกันดีฟ",
-  "shallow_angle": "ทำมุมตื้นขึ้นเพื่อกวาดลูก",
-  "pick_ball": "พยายาม 'ปิ๊ค' ลูกให้โดนทรายน้อยที่สุด",
-  "less_sand": "หลีกเลี่ยงทรายเยอะ ลดระยะสูญเสีย",
-  "splash_sand": "เน้นฟาดทรายใต้ลูก 2–3 ซม. ให้ทรายพาลูกออก",
-  "accelerate": "รักษาความเร็วผ่านทราย อย่าชะงัก",
-  "swing_smooth": "สวิงลื่นไหล ไม่เร่งในดาวน์สวิง",
-  "short_back_long_through": "แบ็คสวิงสั้น ลงยาว คุมสปีด",
-  "shorter_back": "ลดความยาวแบ็คสวิงเพื่อคุมหน้าไม้",
-  "commit_speed": "มั่นใจในสปีดผ่านบอล โดยเฉพาะจากรัฟท์",
-  "flatter_plane": "ยืนใกล้ลูกขึ้นเล็กน้อย ลดมุมไหล่ (ลูกสูงกว่าเท้า)",
-  "steeper_plane": "งอเข่ามากขึ้นให้เพลนชัน (ลูกต่ำกว่าเท้า)",
-  "bend_knees": "งอเข่าเพิ่มเพื่อรักษาระดับสวิง",
-  "bend_knees_more": "งอเข่ามากขึ้นและรักษาสมดุล",
-  "grip_down_05": "จับกริปลดลง ~0.5 นิ้ว",
-  "grip_down_1": "จับกริปลดลง ~1 นิ้ว",
-  "firm_grip_lite": "จับกริบแน่นขึ้นเล็กน้อย (รัฟท์บาง)",
-  "firm_grip": "จับกริบแน่นกว่าปกติ (รัฟท์หนา)",
-  "open_face": "เปิดหน้าไม้ก่อนจับกริบ (เช่น เวดจ์)",
-  "speed_pop": "เร่งสปีดผ่านบอลเพื่อยกสูงทันที",
-  "hold_loft": "คุมหน้าไม้ไม่ให้ปิดเพื่อลดสปิน/วิถีต่ำ",
-  "keep_spin_down": "คุมสปิน: สวิงสั้นขึ้น/ลูกหลัง/นุ่มมือ",
-  "control_spin": "ระวังสปินพุ่งจากลมตาม ปรับแลนดิ้ง",
-  "start_against_wind": "ตั้งไลน์เริ่มตรงข้ามทิศลม",
-  "allow_drift": "ปล่อยให้ลมพาลูกกลับเส้น",
-  "knockdown": "ช็อตค็อกดาวน์: มือหน้า/ลูกหลัง/ฟลว์ต่ำ",
-  "higher_land_soft": "เปิดวิถีให้ตกนุ่มลง",
-  "launch_high": "ตั้งทีสูงพอดี สวิงจากในออกนอกเพื่อมุมเหิน",
-  "tee_height_half": "ตั้งทีให้ลูกสูงครึ่งหัวไม้",
-  "putt_or_chip_low": "พิจารณาพัตต์/ชิพลูกต่ำ ถ้าทางสะอาด",
-  "clip_ball": "พยายาม 'คลิป' ลูกจากพื้นแข็ง",
-  "make_divot": "ยอมให้เกิดดิฝัดเล็กน้อย หน้าอิมแพคหน้าไม้ปิดนิดๆ",
-  "sweep_feel": "กวาดลูกออกจากหญ้าสูงอย่างนุ่ม",
-  // Trajectory & landing
-  "lower_flight_option": "พิจารณาเล่นวิถีต่ำเพื่อต้านลม",
-  "land_soft": "ตั้งใจให้ตกนุ่มด้วยลอฟท์/สปิน",
-  // Pin strategy
-  "aim_left": "ตั้งเป้าซ้ายเล็กน้อย (ลูกต่ำกว่าเท้า)",
-  "aim_left_more": "ตั้งเป้าซ้ายมากขึ้น",
-  "aim_right": "ตั้งเป้าขวาเล็กน้อย (ลูกสูงกว่าเท้า)",
-  "aim_right_more": "ตั้งเป้าขวามากขึ้น",
-  "aim_left_right_stable": "รักษาสมดุลแนวสวิง ไม่เอนไปทางลาด"
+const tokenMap={
+  // Club / distance
+  "club_standard":"เลือกไม้ตามระยะปกติของคุณ",
+  "club_up_0_5":"+0.5 เบอร์ (เงื่อนไขทำให้สั้น)",
+  "club_up_1":"+1 เบอร์ (เงื่อนไขทำให้สั้น)",
+  "club_down_0_5":"-0.5 เบอร์ (เงื่อนไขช่วยให้ไกล)",
+  "club_down_1":"-1 เบอร์ (เงื่อนไขช่วยให้ไกล)",
+  "take_enough_carry":"คำนวณระยะข้ามสิ่งกีดขวาง + เผื่อ 10%",
+  "full_commit":"มั่นใจสปีดเพื่อให้ข้ามชัวร์",
+  "club_up_if_needed":"ถ้ากังวลพลังตก ให้เพิ่มเบอร์ไม้",
+
+  // Setup
+  "ball_center":"ตำแหน่งลูกกลางเท้า",
+  "ball_center_back":"ลูกค่อนไปหลังเล็กน้อย (เข้าลูกชันขึ้น)",
+  "ball_forward":"ลูกค่อนไปหน้าเล็กน้อย",
+  "ball_back":"ลูกไปด้านหลังเพื่อคุมวิถีต่ำ",
+  "widen_stance":"กางเท้าให้กว้างขึ้นเพื่อเสถียรภาพ",
+  "weight_left":"น้ำหนัก 60–70% ไปเท้าซ้าย (บังเกอร์ข้างกรีน)",
+  "weight_uphill_foot":"ถ่ายน้ำหนักไปทางเท้าที่สูงกว่า",
+  "weight_forward":"น้ำหนักอยู่หน้า 60% เพื่อคุมลอฟท์ตอนชิพ",
+  "hands_forward":"มืออยู่หน้าเล็กน้อยเพื่อคุมใบไม้",
+  "grip_down_0_5":"จับกริปลดลง ~0.5 นิ้ว",
+  "grip_down_1":"จับกริปลดลง ~1 นิ้ว",
+
+  // Swing
+  "contact_ball_then_turf":"เข้าลูกก่อนแล้วค่อยโดนหญ้า (เหล็ก)",
+  "normal_trajectory":"สวิงปกติ เน้นจังหวะสม่ำเสมอ",
+  "steepen_slight":"ตั้งใจลงไม้ชันขึ้นเล็กน้อย",
+  "steepen":"ลงไม้ชันเพื่อทะลุหญ้ารัฟท์",
+  "more_steep":"เพิ่มมุมชันเพื่อลด fat",
+  "shallow_angle":"ทำมุมตื้นขึ้นเพื่อกวาดลูก",
+  "pick_ball":"พยายาม 'pick' ลูกให้โดนทรายน้อย",
+  "less_sand":"หลีกเลี่ยงทรายเยอะ ลดระยะสูญเสีย",
+  "splash_sand":"เน้นฟาดทรายใต้ลูก 2–3 ซม. ให้ทรายพาลูกออก",
+  "accelerate":"รักษาความเร็วผ่านทราย อย่าชะงัก",
+  "swing_smooth":"สวิงลื่นไหล ไม่เร่งในดาวน์สวิง",
+  "short_back_long_through":"แบ็คสวิงสั้น ลงยาว คุมสปีด",
+  "shorter_back":"ลดความยาวแบ็คสวิงเพื่อคุมหน้าไม้",
+  "commit_speed":"มั่นใจในสปีดผ่านบอล โดยเฉพาะจากรัฟท์",
+  "flatter_plane":"ยืนใกล้ลูกขึ้นเล็กน้อย (ลูกสูงกว่าเท้า)",
+  "steeper_plane":"งอเข่าเพิ่มให้เพลนชัน (ลูกต่ำกว่าเท้า)",
+  "bend_knees":"งอเข่าเพิ่มเพื่อรักษาระดับสวิง",
+  "bend_knees_more":"งอเข่ามากขึ้นและรักษาสมดุล",
+  "firm_grip_lite":"จับกริบแน่นขึ้นเล็กน้อย",
+  "firm_grip":"จับกริบแน่นกว่าปกติ",
+  "open_face":"เปิดหน้าไม้ก่อนจับกริบ (เช่น เวดจ์)",
+  "speed_pop":"เร่งสปีดผ่านบอลเพื่อยกสูงทันที",
+  "hold_loft":"คุมหน้าไม้ไม่ให้ปิด เพื่อลดสปิน/วิถีต่ำ",
+  "keep_spin_down":"คุมสปิน: สวิงสั้น/ลูกหลัง/นุ่มมือ",
+  "control_spin":"ระวังสปินพุ่งจากลมตาม ปรับแลนดิ้ง",
+  "clip_ball":"พยายาม 'clip' ลูกจากพื้นแข็ง",
+  "make_divot_en":"Make a divot (เล็กน้อยหลังจุดอิมแพค)",
+  "sweep_feel":"กวาดลูกออกจากหญ้าสูงแบบนุ่ม",
+
+  // Strategy / Aim / Trajectory
+  "start_against_wind":"ตั้งไลน์เริ่มตรงข้ามทิศลม",
+  "start_against_wind_l2r":"ตั้งไลน์ไปทางลม (เริ่มซ้าย ให้ลมพาไปขวา)",
+  "start_against_wind_r2l":"ตั้งไลน์ไปทางลม (เริ่มขวา ให้ลมพาไปซ้าย)",
+  "allow_drift":"ปล่อยให้ลมพาลูกกลับเส้น",
+  "aim_left":"ตั้งเป้าซ้ายเล็กน้อย (ลูกต่ำกว่าเท้า)",
+  "aim_left_more":"ตั้งเป้าซ้ายมากขึ้น",
+  "aim_right":"ตั้งเป้าขวาเล็กน้อย (ลูกสูงกว่าเท้า)",
+  "aim_right_more":"ตั้งเป้าขวามากขึ้น",
+  "aim_balance":"รักษาสมดุลแนวสวิง ไม่เอนไปทางลาด",
+  "traj_low_1":"(วิถีต่ำเล็กน้อย)",
+  "traj_low_2":"(วิถีต่ำมากขึ้น)",
+  "traj_high_1":"(วิถีสูงเล็กน้อย)",
+  "traj_high_2":"(วิถีสูงมากขึ้น)",
+  "land_before_flag":"ตั้งใจให้ตกก่อนธงเล็กน้อย",
+  "land_soft":"ตั้งใจให้ตกนุ่มด้วยลอฟท์/สปิน",
+  "knockdown":"Knockdown: ลูกหลัง/มือหน้า/วิถีต่ำ",
+  "consider_putt_or_low_chip":"พิจารณาพัตต์/ชิพลูกต่ำ ถ้าทางสะอาด",
+  "reduce_loft_hint":"หลีกเลี่ยงลอฟท์มากเกินไปเมื่ออยู่รัฟท์หนา",
+
+  // Bias / safety
+  "aim_center_bias":"เล็งกลางกรีนเป็นหลักเพื่อลดความเสี่ยง",
 };
 
-// Default weights
 function defaultWeight(token){
-  const base = {
-    "club_standard": 1, "take_more_club_small": 2, "take_more_club": 2,
-    "add_club_05": 2, "add_club_1": 3, "minus_club_05": 2, "minus_club_1": 3,
-    "ball_center": 1, "ball_center_back": 2, "ball_forward": 1, "ball_back": 2,
-    "widen_stance": 1, "weight_left": 2, "weight_uphill_foot": 2, "weight_forward": 2, "hands_forward": 2,
-    "contact_ball_then_turf": 2, "normal_trajectory": 1, "steepen_slight": 2, "steepen": 3, "more_steep":2,
-    "shallow_angle": 2, "pick_ball": 2, "less_sand": 2, "splash_sand": 3, "accelerate": 2, "swing_smooth": 1,
-    "short_back_long_through": 2, "shorter_back": 2, "commit_speed": 3, "flatter_plane": 2, "steeper_plane": 2,
-    "bend_knees": 1, "bend_knees_more": 2, "grip_down_05": 1, "grip_down_1": 2, "firm_grip_lite": 1, "firm_grip": 2,
-    "open_face": 2, "speed_pop": 2, "hold_loft": 2, "keep_spin_down": 2, "control_spin": 2, "start_against_wind": 2,
-    "allow_drift": 1, "knockdown": 3, "higher_land_soft": 2, "launch_high": 2, "tee_height_half": 1, "putt_or_chip_low": 2,
-    "clip_ball": 2, "make_divot": 2, "sweep_feel": 1, "lower_flight_option":2, "land_soft":2,
-    "aim_left":1, "aim_left_more":1, "aim_right":1, "aim_right_more":1, "aim_left_right_stable":1,
-    "take_enough_carry":3, "full_commit":2
-  };
-  return base[token] || 1;
+  const base={
+    "club_standard":1, "take_enough_carry":3, "full_commit":2,
+    "ball_center":1, "ball_center_back":2, "ball_forward":1, "ball_back":2,
+    "widen_stance":1, "weight_left":2, "weight_uphill_foot":2, "weight_forward":2, "hands_forward":2,
+    "contact_ball_then_turf":2, "normal_trajectory":1, "steepen_slight":2, "steepen":3, "more_steep":2,
+    "shallow_angle":2, "pick_ball":2, "less_sand":2, "splash_sand":3, "accelerate":2, "swing_smooth":1,
+    "short_back_long_through":2, "shorter_back":2, "commit_speed":3, "flatter_plane":2, "steeper_plane":2,
+    "bend_knees":1, "bend_knees_more":2, "grip_down_0_5":1, "grip_down_1":2, "firm_grip_lite":1, "firm_grip":2,
+    "open_face":2, "speed_pop":2, "hold_loft":2, "keep_spin_down":2, "control_spin":2, "start_against_wind":2,
+    "start_against_wind_l2r":2, "start_against_wind_r2l":2, "allow_drift":1, "clip_ball":2, "make_divot_en":2,
+    "consider_putt_or_low_chip":2, "reduce_loft_hint":1, "aim_left":1, "aim_left_more":1, "aim_right":1, "aim_right_more":1, "aim_balance":1,
+    "knockdown":3, "land_before_flag":2, "land_soft":2, "aim_center_bias":1
+  }; return base[token]||1;
 }
 
 function currentState(){
   return {
-    lie: document.getElementById('lie').value,
-    dist: +document.getElementById('dist').value,
-    slopeY: document.getElementById('slopeY').value,
-    slopeX: document.getElementById('slopeX').value,
-    wind: document.getElementById('wind').value,
-    ball: document.getElementById('ball').value,
-    turf: document.getElementById('turf').value,
-    obs: document.getElementById('obs').value,
-    stance: document.getElementById('stance').value,
-    pin: document.getElementById('pin').value,
-    time: new Date().toISOString()
+    shotType:document.getElementById('shotType').value,
+    lie:document.getElementById('lie').value,
+    dist:+document.getElementById('dist').value,
+    slopeY:document.getElementById('slopeY').value,
+    slopeX:document.getElementById('slopeX').value,
+    wind:document.getElementById('wind').value,
+    ball:document.getElementById('ball').value,
+    turf:document.getElementById('turf').value,
+    obs:document.getElementById('obs').value,
+    stance:document.getElementById('stance').value,
+    pin:document.getElementById('pin').value,
+    green:document.getElementById('green').value,
+    notes:document.getElementById('notes').value.trim(),
+    time:new Date().toISOString()
   };
 }
 
 function ruleTokens(state){
-  let tokens = [];
-  let why = [];
-  baseRules.forEach(r=> {
-    try {
-      if (r.when(state)){
-        tokens = tokens.concat(r.add);
-        why.push({trigger: r.when.toString().slice(0,80)+"...", add: r.add});
-      }
-    } catch(e){ /* ignore */}
-  });
-  // distance-specific heuristics
-  if (state.dist <= 40 && state.lie!=="บังเกอร์แฟร์เวย์"){
-    tokens.push("short_back_long_through","weight_forward","hands_forward");
-  } else if (state.dist >= 170 && state.lie!=="บังเกอร์ข้างกรีน"){
-    tokens.push("swing_smooth","club_up_if_needed");
-  }
+  let tokens=[]; let why=[];
+  baseRules.forEach(r=>{ try{ if(r.when(state)){ tokens=tokens.concat(r.add); why.push({add:r.add}); } } catch(e){} });
+  if(state.dist<=40 && state.lie!=="บังเกอร์แฟร์เวย์"){ tokens.push("short_back_long_through","weight_forward","hands_forward"); }
+  else if(state.dist>=170 && state.lie!=="บังเกอร์ข้างกรีน"){ tokens.push("swing_smooth","club_up_if_needed"); }
+  // Pin bias
+  if(state.pin==="left") tokens.push("aim_center_bias");
+  if(state.pin==="right") tokens.push("aim_center_bias");
   return {tokens:[...new Set(tokens)], why};
 }
 
-// Combine tokens into grouped recommendations
+// Resolve conflicts: club adjust, ball position, trajectory
+function resolveConflicts(tokens){
+  let clubAdj=0; // + up, - down
+  tokens.forEach(t=>{ if(t==="club_up_0_5") clubAdj+=0.5; if(t==="club_up_1") clubAdj+=1; if(t==="club_down_0_5") clubAdj-=0.5; if(t==="club_down_1") clubAdj-=1; });
+  let ballScore=0; // + forward, - back
+  tokens.forEach(t=>{ if(t==="ball_forward") ballScore+=1; if(t==="ball_back") ballScore-=1; });
+  if(tokens.includes("ball_center_back")) ballScore-=0.5;
+  let traj=0; // + high, - low
+  tokens.forEach(t=>{ if(t==="traj_low_1") traj-=1; if(t==="traj_low_2") traj-=2; if(t==="traj_high_1") traj+=1; if(t==="traj_high_2") traj+=2; });
+  traj += (ballScore>0? +0.5 : ballScore<0? -0.5 : 0);
+
+  const filtered=tokens.filter(t=> !/^club_(up|down)_/.test(t) && !/^traj_/.test(t));
+  const finals=[];
+  if(Math.abs(clubAdj)<0.25){ finals.push("club_standard"); }
+  else if(clubAdj>=0.25 && clubAdj<0.75){ finals.push("club_up_0_5"); }
+  else if(clubAdj>=0.75){ finals.push("club_up_1"); }
+  else if(clubAdj<=-0.25 && clubAdj>-0.75){ finals.push("club_down_0_5"); }
+  else if(clubAdj<=-0.75){ finals.push("club_down_1"); }
+
+  if(ballScore>0.25){ finals.push("ball_forward"); }
+  else if(ballScore<-0.25){ finals.push("ball_back"); }
+  else { finals.push("ball_center"); }
+
+  if(traj>=1){ finals.push("traj_final_high"); }
+  else if(traj<=-1){ finals.push("traj_final_low"); }
+
+  return {tokens:[...new Set(filtered.concat(finals))], clubAdj, ballScore, traj};
+}
+
 function toAdvice(tokens, weights){
-  const txt = (t)=> tokenMap[t] || t;
-  // Score tokens using default + personalized weights
-  const final = tokens.map(t=> {
-    const base = defaultWeight(t);
-    const w = (weights && Number.isFinite(weights[t])) ? weights[t] : 0;
-    return { token:t, score: base + w, text: txt(t) };
-  }).sort((a,b)=> b.score - a.score);
-
-  // Group by category (rough heuristics via token prefixes)
-  const sections = [
-    {name:"การเลือกไม้/จัดระยะ", filter:["club","add_club","minus_club","take_enough_carry","carry","knockdown","lower_flight_option","higher_land_soft","keep_spin_down","control_spin","land_soft","start_against_wind","allow_drift","launch_high","tee_height_half","club_up_if_needed"]},
-    {name:"การยืนจดลูก/เซ็ตอัพ", filter:["ball_","weight_","hands_forward","widen_stance","grip_down","bend_knees"]},
-    {name:"คีย์สวิง/จังหวะ", filter:["contact_","normal_","steepen","shallow","pick_ball","less_sand","splash_sand","accelerate","swing_smooth","short_back","shorter_back","commit_speed","flatter_plane","steeper_plane","hold_loft","open_face","speed_pop","clip_ball","make_divot","sweep_feel"]},
-    {name:"กลยุทธ์เส้น/ทิศ", filter:["aim_"]}
+  const displayText=t=>{ if(t==="traj_final_high") return "ตั้งใจเล่นวิถีสูง (ตกนุ่ม/หยุดเร็ว)"; if(t==="traj_final_low") return "ตั้งใจเล่นวิถีต่ำ (คุมทิศ/ทะลุลม)"; return tokenMap[t]||t; };
+  const scored=tokens.map(t=>({ token:t, score:(defaultWeight(t)+((weights&&Number.isFinite(weights[t]))?weights[t]:0)), text:displayText(t) })).sort((a,b)=>b.score-a.score);
+  const sections=[
+    {name:"การเลือกไม้/จัดระยะ", test:x=>/^club_/.test(x.token) || ["take_enough_carry","full_commit","club_up_if_needed"].includes(x.token)},
+    {name:"การยืนจดลูก/เซ็ตอัพ", test:x=>/(^ball_)|(^weight_)|(^hands_)|(^widen_)|(^grip_)/.test(x.token)},
+    {name:"คีย์สวิง/จังหวะ", test:x=>/(contact_|normal_|steepen|shallow_|pick_ball|less_sand|splash_sand|accelerate|swing_smooth|short_back|shorter_back|commit_speed|flatter_plane|steeper_plane|hold_loft|open_face|speed_pop|clip_ball|make_divot_en|consider_putt_or_low_chip|reduce_loft_hint)/.test(x.token)},
+    {name:"ทิศ/เส้นเริ่ม & วิถี/ลงจอด", test:x=>/(^aim_)|(^start_)|(^allow_)|(^traj_final_)|(^land_)/.test(x.token)},
   ];
-
-  function inFilter(token, arr){
-    return arr.some(prefix=> token.startsWith(prefix));
-  }
-
-  const lines = [];
-  sections.forEach(sec=> {
-    const items = final.filter(x=> inFilter(x.token, sec.filter)).slice(0,6);
-    if (items.length){
-      lines.push(`• <span class="small" style="color:#93c5fd">${sec.name}</span>`);
-      lines.push("<ul>");
-      items.forEach(it=> lines.push(`<li>${it.text}</li>`));
-      lines.push("</ul>");
-    }
-  });
-
-  // Fallback show all if empty
-  if (!lines.length){
-    lines.push("<ul>");
-    final.slice(0,8).forEach(it=> lines.push(`<li>${it.text}</li>`));
-    lines.push("</ul>");
-  }
-
-  // Collect top tags
-  const tags = final.slice(0,6).map(it=> tagify(it.text));
-  return { html: lines.join("\n"), tags: tags.join(" ") };
+  const html=[]; sections.forEach(sec=>{ const items=scored.filter(sec.test).slice(0,8); if(items.length){ html.push(`• <span class="small" style="color:#93c5fd">${sec.name}</span>`); html.push("<ul>"); items.forEach(it=> html.push(`<li>${it.text}</li>`)); html.push("</ul>"); } });
+  if(!html.length){ html.push("<ul>"); scored.slice(0,10).forEach(it=> html.push(`<li>${it.text}</li>`)); html.push("</ul>"); }
+  const tags=scored.slice(0,8).map(it=> tag(it.text)).join(" ");
+  return {html:html.join("
+"), tags};
 }
 
-// Input → Recommend
-let lastState = null;
-let lastTokens = [];
+let lastState=null, lastTokens=[];
 function recommend(){
-  const s = currentState();
-  const {tokens, why} = ruleTokens(s);
-  lastState = s; lastTokens = tokens;
-  const weights = loadWeights();
-  const advice = toAdvice(tokens, weights);
-  document.getElementById('output').innerHTML = advice.html;
-  document.getElementById('tags').innerHTML = advice.tags;
-  document.getElementById('why').textContent = JSON.stringify({state:s, tokens, rules_fired:why}, null, 2);
-  document.getElementById('profileScore').textContent = "โปรไฟล์เรียนรู้: " + profileScore();
-  addLog({type:"recommend", state:s, tokens});
-  window.scrollTo({top:0, behavior:"smooth"});
+  const s=currentState(); const wt=loadWeights(); const raw=ruleTokens(s); const resolved=resolveConflicts(raw.tokens);
+  lastState=s; lastTokens=resolved.tokens; const advice=toAdvice(resolved.tokens, wt);
+  document.getElementById('output').innerHTML=advice.html; document.getElementById('tags').innerHTML=advice.tags;
+  document.getElementById('why').textContent=JSON.stringify({state:s, rules:raw, resolved}, null, 2);
+  document.getElementById('profileScore').textContent="โปรไฟล์เรียนรู้: "+profileScore(); addLog({type:"recommend", state:s, tokens:resolved.tokens}); window.scrollTo({top:0, behavior:"smooth"});
 }
 
-// Feedback
-function sendFeedback(isGood){
-  if (!lastState){ alert("กรุณากด 'แนะนำวิธีตี' ก่อนค่ะ"); return; }
-  const w = loadWeights();
-  const delta = isGood ? +1 : -1;
-  lastTokens.forEach(t=> { w[t] = (w[t] || 0) + delta; });
-  saveWeights(w);
-  addLog({type: isGood ? "good" : "bad", state:lastState, tokens:lastTokens, delta});
-  document.getElementById('profileScore').textContent = "โปรไฟล์เรียนรู้: " + profileScore();
-  // Recompute to show new order
-  const advice = toAdvice(lastTokens, w);
-  document.getElementById('output').innerHTML = advice.html;
-  document.getElementById('tags').innerHTML = advice.tags;
-}
+function sendFeedback(isGood){ if(!lastState){ alert("กรุณากด 'แนะนำวิธีตี' ก่อนค่ะ"); return; } const w=loadWeights(); const d=isGood?+1:-1; lastTokens.forEach(t=>{ w[t]=(w[t]||0)+d; }); saveWeights(w); addLog({type:isGood?"good":"bad", state:lastState, tokens:lastTokens, delta:d}); document.getElementById('profileScore').textContent="โปรไฟล์เรียนรู้: "+profileScore(); const advice=toAdvice(lastTokens, w); document.getElementById('output').innerHTML=advice.html; document.getElementById('tags').innerHTML=advice.tags; }
 
-// Logs / Export
-function addLog(entry){
-  const L = loadLogs();
-  L.push({...entry, ts: new Date().toISOString()});
-  saveLogs(L);
-}
-function exportData(){
-  const data = {
-    version: "1.0",
-    weights: loadWeights(),
-    logs: loadLogs()
-  };
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = "golf_shot_profile.json"; a.click();
-  URL.revokeObjectURL(url);
-}
-function importData(){
-  const inp = document.createElement('input');
-  inp.type = "file"; inp.accept = "application/json";
-  inp.onchange = (e)=> {
-    const file = e.target.files[0]; if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ()=> {
-      try {
-        const data = JSON.parse(reader.result);
-        if (data.weights) saveWeights(data.weights);
-        if (data.logs) saveLogs(data.logs);
-        alert("นำเข้าโปรไฟล์สำเร็จ");
-        document.getElementById('profileScore').textContent = "โปรไฟล์เรียนรู้: " + profileScore();
-      } catch(err){ alert("ไฟล์ไม่ถูกต้อง"); }
-    };
-    reader.readAsText(file);
-  };
-  inp.click();
-}
-function clearData(){
-  if (confirm("ล้างการเรียนรู้ทั้งหมด?")){
-    localStorage.removeItem(KEY);
-    localStorage.removeItem(LOGKEY);
-    document.getElementById('profileScore').textContent = "โปรไฟล์เรียนรู้: 0";
-    alert("ล้างแล้ว");
-  }
-}
-function resetForm(){
-  document.getElementById('lie').selectedIndex = 0;
-  document.getElementById('dist').value = 120;
-  document.getElementById('slopeY').value = "flat";
-  document.getElementById('slopeX').value = "level";
-  document.getElementById('wind').value = "calm";
-  document.getElementById('ball').value = "normal";
-  document.getElementById('turf').value = "normal";
-  document.getElementById('obs').value = "none";
-  document.getElementById('stance').value = "stable";
-  document.getElementById('pin').value = "center";
-  document.getElementById('output').textContent = "เลือกสภาพด้านซ้าย แล้วกด “แนะนำวิธีตี”";
-  document.getElementById('tags').innerHTML = "";
-  document.getElementById('why').textContent = "";
-}
-document.addEventListener('DOMContentLoaded', ()=> {
-  document.getElementById('profileScore').textContent = "โปรไฟล์เรียนรู้: " + profileScore();
-});
+function addLog(e){ const L=loadLogs(); L.push({...e, ts:new Date().toISOString()}); saveLogs(L); document.getElementById('logCount').textContent = 'logs: '+L.length; }
+function saveResult(){ const r={ res_main:document.getElementById('res_main').value, ball_shape:document.getElementById('ball_shape').value, miss_m:+document.getElementById('miss_m').value, state:lastState, ts:new Date().toISOString() }; addLog({type:'result', ...r}); alert('บันทึกผลแล้ว'); }
+
+function exportData(){ const data={version:"2.0-pro", weights:loadWeights(), logs:loadLogs()}; const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download="golf_shot_profile.json"; a.click(); URL.revokeObjectURL(url); }
+function importData(){ const i=document.createElement('input'); i.type="file"; i.accept="application/json"; i.onchange=e=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); if(d.weights) saveWeights(d.weights); if(d.logs) saveLogs(d.logs); alert('นำเข้าโปรไฟล์สำเร็จ'); document.getElementById('profileScore').textContent="โปรไฟล์เรียนรู้: "+profileScore(); document.getElementById('logCount').textContent='logs: '+loadLogs().length; }catch(err){ alert('ไฟล์ไม่ถูกต้อง'); } }; r.readAsText(f); }; i.click(); }
+function clearData(){ if(confirm('ล้างการเรียนรู้ทั้งหมด?')){ localStorage.removeItem(KEY); localStorage.removeItem(LOGKEY); document.getElementById('profileScore').textContent='โปรไฟล์เรียนรู้: 0'; document.getElementById('logCount').textContent='logs: 0'; alert('ล้างแล้ว'); } }
+function resetForm(){ document.getElementById('shotType').value='approach'; document.getElementById('lie').selectedIndex=0; document.getElementById('dist').value=120; document.getElementById('slopeY').value='flat'; document.getElementById('slopeX').value='level'; document.getElementById('wind').value='calm'; document.getElementById('ball').value='normal'; document.getElementById('turf').value='normal'; document.getElementById('obs').value='none'; document.getElementById('stance').value='stable'; document.getElementById('pin').value='center'; document.getElementById('green').value='normal'; document.getElementById('notes').value=''; document.getElementById('output').textContent='เลือกสภาพด้านบน แล้วกด “แนะนำวิธีตี”'; document.getElementById('tags').innerHTML=''; document.getElementById('why').textContent=''; }
+
+document.addEventListener('DOMContentLoaded', ()=>{ document.getElementById('profileScore').textContent="โปรไฟล์เรียนรู้: "+profileScore(); document.getElementById('logCount').textContent='logs: '+loadLogs().length; });
 </script>
 </body>
 </html>
